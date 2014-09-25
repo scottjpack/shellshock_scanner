@@ -21,11 +21,7 @@ def record_scan_response():
 	
 class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def do_GET(self):
-        #Sample values in self for URL: http://localhost:8080/jsxmlrpc-0.3/
-        #self.path  '/jsxmlrpc-0.3/'
-        #self.raw_requestline   'GET /jsxmlrpc-0.3/ HTTP/1.1rn'
-        #self.client_address    ('127.0.0.1', 3727)
-		
+
 		print self.path[1::]
 		print "%s Responded" % ids[self.path[1::]] 
 		output_file.write("%s: Responded\n" % ids[self.path[1::]])
@@ -62,6 +58,7 @@ def create_ip_scan_table(ips):
 	return hash_table
 		
 def usage():
+	#Print usage
 	print "shellshock_scanner.py"
 	print "Options:"
 	print "-i <inputfile>"

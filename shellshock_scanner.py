@@ -122,7 +122,7 @@ def main():
 		sys.exit()
 
 	if public_ip == "-----":
-		print "Must set public_ip in script"
+		print "Must set public_ip using -p"
 		exit()
 		
 	#Get all our opts in place.
@@ -132,6 +132,8 @@ def main():
 			return
 		elif o == "-i":
 			input_filename = a
+		elif o == "-p":
+			public_ip = a
 		elif o == "-o":
 			output_filename = a
 
